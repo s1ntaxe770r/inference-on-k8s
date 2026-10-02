@@ -1,0 +1,10 @@
+{
+  "model": "qwen3-0.6b",
+  "messages": [
+    {"role": "user", "content": "Explain a Kubernetes pod in two sentences."}
+  ],
+  "temperature": 0,
+  "max_tokens": 128,
+  "stream": true,
+  "chat_template_kwargs": {"enable_thinking": false}
+}

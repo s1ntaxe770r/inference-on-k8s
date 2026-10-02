@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en" data-theme="blog-light">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Model size and estimated download time</title>
+<style>
+:root{--canvas:#e6dfc4;--ink:#152b3c;--muted:#52606a;--line:#b8b7a7;--grid:rgba(21,43,60,.12);--accent:#a85a3c;--band:rgba(168,90,60,.17);--surface:#f0e8d0}
+[data-theme="blog-dark"]{--canvas:#1f1b14;--ink:#e0d8be;--muted:#b4ac98;--line:#60564b;--grid:rgba(224,216,190,.12);--accent:#f2b6a0;--band:rgba(242,182,160,.17);--surface:#2a2520}
+[data-theme="raid"]{--canvas:#0a0a0a;--ink:#e5e5e5;--muted:#9ca3af;--line:#374151;--grid:rgba(156,163,175,.14);--accent:#4ade80;--band:rgba(74,222,128,.15);--surface:#121212}
+*{box-sizing:border-box}body{margin:0;background:var(--canvas);min-height:100vh;display:grid;place-items:center;padding:16px}main{width:100%;max-width:1080px}svg{display:block;width:100%;height:auto;cursor:pointer;overflow:visible}svg:focus-visible{outline:2px solid var(--accent);outline-offset:4px}text{font-family:'JetBrains Mono','SF Mono',ui-monospace,monospace;font-size:15px;fill:var(--muted)}.grid{stroke:var(--grid);stroke-width:1}.guide{stroke:var(--accent);stroke-width:1;stroke-dasharray:4 5}.median{stroke:var(--accent);stroke-width:2.5;fill:none}.legend{font-size:14px}.callout{fill:var(--accent);font-size:17px;font-weight:600}
+.controls{padding:0 6% 20px;color:var(--ink);font:13px 'JetBrains Mono','SF Mono',ui-monospace,monospace}.readout,.slider-row,.toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px}.readout{margin:8px 0 16px}output{color:var(--accent);font-size:20px;font-weight:600}.slider-row{margin-bottom:18px}input[type=range]{flex:1;min-width:0;accent-color:var(--accent)}button,select{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:10px 12px;cursor:pointer}button:hover,button[aria-pressed=true]{border-color:var(--accent);color:var(--accent)}button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:3px}#play{min-width:110px}.presets{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.preset{display:flex;justify-content:space-between;gap:12px}.preset span:last-child{color:var(--muted)}.toolbar{justify-content:flex-end;margin-top:16px;color:var(--muted);font-size:12px}.toolbar select{padding:6px 10px}.toolbar label{display:flex;align-items:center;gap:10px}
+@media(max-width:640px){.controls{padding:0 6% 12px;font-size:11px}.presets{grid-template-columns:repeat(2,1fr)}output{font-size:17px}.readout{gap:8px}}
+@media(max-width:640px){body{padding:8px}text{font-size:26px}.legend{font-size:22px}.callout{font-size:26px}}
+</style>
+</head>
+<body><main>
+<svg id="chart" viewBox="0 0 1000 560" role="button" tabindex="0" aria-label="Pause download-time animation" aria-describedby="description">
+<title>Estimated download time by model file size</title>
+<desc id="description">Estimated transfer time at the measured median of 87.2 MB/s. Shading reflects three sample speeds, not a prediction interval. Excludes disk writes and model loading. Click or press Space to pause or replay. GB and MB are decimal units.</desc>
+<g id="axes"></g>
+<line x1="80" y1="32" x2="105" y2="32" stroke="var(--accent)" stroke-width="2.5"></line>
+<text id="rate" class="legend" x="116" y="37"></text>
+<rect x="80" y="53" width="25" height="10" fill="var(--band)" stroke="var(--accent)"></rect>
+<text class="legend" x="116" y="64">Range from 3 samples</text>
+<path id="band" fill="var(--band)"></path><path id="full-line" class="median" opacity=".22"></path><path id="line" class="median"></path>
+<path id="horizontal" class="guide"></path><path id="vertical" class="guide"></path>
+<circle id="dot" r="5" fill="var(--accent)" stroke="var(--canvas)" stroke-width="2"></circle>
+<rect id="callout-bg" width="290" height="44" rx="4" fill="var(--surface)" stroke="var(--line)"></rect>
+<text id="callout" class="callout" text-anchor="middle"></text>
+</svg>
+<div class="controls">
+  <div class="readout"><label for="size">Model files: <strong id="size-label">16 GB</strong></label><output id="time" for="size"></output></div>
+  <div class="slider-row"><input id="size" type="range" min="0" max="80" step="0.5" value="16" aria-label="Model file size in gigabytes"><button id="play" type="button">Play growth</button></div>
+  <div class="presets" aria-label="Example file sizes"></div>
+</div>
+</main>
+<script id="measurement" type="application/json">{"samples": [{"trial": 1, "started_at": "2026-09-22T15:41:16.987469+00:00", "pod": "model-download-speed-check", "source": "Hugging Face / Qwen/Qwen3-0.6B / model.safetensors", "revision": "c1899de289a04d12100db370d81485cdf75e47ca", "requested_bytes": 536870912, "concurrency": 1, "destination": "discard (no disk writes)", "http_status": 206, "content_range": "bytes 0-536870911/1503300328", "response_headers_seconds": 0.2795494379970478, "success": true, "bytes": 536870912, "elapsed_seconds": 6.1033110990028945, "effective_MB_per_second": 87.96387785110761, "effective_Mbps": 703.7110228088609, "first_chunk_seconds": 0.32569516899820883}, {"trial": 2, "started_at": "2026-09-22T15:41:23.091051+00:00", "pod": "model-download-speed-check", "source": "Hugging Face / Qwen/Qwen3-0.6B / model.safetensors", "revision": "c1899de289a04d12100db370d81485cdf75e47ca", "requested_bytes": 536870912, "concurrency": 1, "destination": "discard (no disk writes)", "http_status": 206, "content_range": "bytes 0-536870911/1503300328", "response_headers_seconds": 0.21276456899795448, "success": true, "bytes": 536870912, "elapsed_seconds": 6.467983529997582, "effective_MB_per_second": 83.00437215247527, "effective_Mbps": 664.0349772198022, "first_chunk_seconds": 0.25791528699483024}, {"trial": 3, "started_at": "2026-09-22T15:41:29.559274+00:00", "pod": "model-download-speed-check", "source": "Hugging Face / Qwen/Qwen3-0.6B / model.safetensors", "revision": "c1899de289a04d12100db370d81485cdf75e47ca", "requested_bytes": 536870912, "concurrency": 1, "destination": "discard (no disk writes)", "http_status": 206, "content_range": "bytes 0-536870911/1503300328", "response_headers_seconds": 0.1777094209974166, "success": true, "bytes": 536870912, "elapsed_seconds": 6.157855391000339, "effective_MB_per_second": 87.18472226298671, "effective_Mbps": 697.4777781038937, "first_chunk_seconds": 0.2256070089933928}], "summary": {"median_MBps": 87.18472226298671, "min_MBps": 83.00437215247527, "max_MBps": 87.96387785110761}}</script>
+<script>
+'use strict';
+const data=JSON.parse(document.getElementById('measurement').textContent), stats=data.summary;
+const $=id=>document.getElementById(id), ns='http://www.w3.org/2000/svg';
+const seconds=gb=>gb*1000/stats.median_MBps;
+const duration=s=>{const n=Math.round(s);return n<60?`${n} s`:`${Math.floor(n/60)} min ${String(n%60).padStart(2,'0')} s`;};
+const L=80,R=940,T=114,B=456,maxMinutes=Math.ceil(80*1000/stats.min_MBps/60/4)*4;
+const x=gb=>L+gb/80*(R-L), y=s=>B-s/(maxMinutes*60)*(B-T);
+function el(tag,attrs,text){const e=document.createElementNS(ns,tag);for(const[k,v]of Object.entries(attrs))e.setAttribute(k,v);if(text!==undefined)e.textContent=text;return e;}
+$('rate').textContent=`${stats.median_MBps.toFixed(1)} MB/s · measured median`;
+for(let m=0;m<=maxMinutes;m+=4){$('axes').append(el('line',{x1:L,y1:y(m*60),x2:R,y2:y(m*60),class:'grid'}),el('text',{x:L-14,y:y(m*60)+5,'text-anchor':'end'},String(m)));}
+for(const gb of [0,16,32,48,64,80])$('axes').append(el('text',{x:x(gb),y:B+32,'text-anchor':'middle'},String(gb)));
+$('axes').append(el('text',{x:L,y:T-18},'ESTIMATED TIME · MINUTES'),el('text',{x:R,y:B+78,'text-anchor':'end'},'MODEL FILES · GB'));
+$('full-line').setAttribute('d',`M ${x(0)},${y(0)} L ${x(80)},${y(seconds(80))}`);
+$('band').setAttribute('d',`M ${x(0)},${y(0)} L ${x(80)},${y(80*1000/stats.max_MBps)} L ${x(80)},${y(80*1000/stats.min_MBps)} Z`);
+const presetButtons=[];
+for(const gb of [8,16,32,64]){const button=document.createElement('button');button.type='button';button.className='preset';button.innerHTML=`<span>${gb} GB</span><span>${duration(seconds(gb))}</span>`;button.onclick=()=>{stop();setSize(gb);};button.setAttribute('aria-label',`${gb} gigabytes`);document.querySelector('.presets').appendChild(button);presetButtons.push([gb,button]);}
+let size=16;
+function setSize(gb){size=Math.max(0,Math.min(80,Number(gb)));$('size').value=size;$('size-label').textContent=`${Number(size.toFixed(1))} GB`;$('time').textContent=`≈ ${duration(seconds(size))}`;for(const[n,b]of presetButtons)b.setAttribute('aria-pressed',Math.abs(size-n)<.01?'true':'false');const xx=x(size),yy=y(seconds(size));$('line').setAttribute('d',`M ${L},${B} L ${xx},${yy}`);$('horizontal').setAttribute('d',`M ${L},${yy} H ${xx}`);$('vertical').setAttribute('d',`M ${xx},${B} V ${yy}`);$('dot').setAttribute('cx',xx);$('dot').setAttribute('cy',yy);const cx=Math.max(L+150,Math.min(R-150,xx)),cy=yy-32;$('callout-bg').setAttribute('x',cx-145);$('callout-bg').setAttribute('y',cy-28);$('callout').setAttribute('x',cx);$('callout').setAttribute('y',cy);$('callout').textContent=`${Number(size.toFixed(1))} GB · ${duration(seconds(size))}`;}
+function setTheme(name){document.documentElement.dataset.theme=['blog-light','blog-dark','raid'].includes(name)?name:'blog-light';}
+let frame=0,playing=false;
+function stop(){cancelAnimationFrame(frame);playing=false;$('play').textContent='Play growth';$('chart').setAttribute('aria-label','Replay download-time animation');}
+function play(){stop();if(matchMedia('(prefers-reduced-motion: reduce)').matches){setSize(80);return;}playing=true;$('play').textContent='Pause';$('chart').setAttribute('aria-label','Pause download-time animation');const start=performance.now();function tick(now){const phase=(now-start)%12000;setSize(Math.min(1,Math.max(0,(phase-1000)/8000))*80);frame=requestAnimationFrame(tick);}frame=requestAnimationFrame(tick);}
+function toggle(){playing?stop():play();}
+$('play').onclick=toggle;$('size').oninput=()=>{stop();setSize($('size').value);};
+$('chart').onclick=toggle;
+$('chart').onkeydown=e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();toggle();}};
+const reduced=matchMedia('(prefers-reduced-motion: reduce)');reduced.addEventListener('change',e=>{if(e.matches){stop();setSize(80);}});
+setTheme(new URLSearchParams(location.search).get('theme'));setSize(16);
+try {
+  if (window.parent !== window) {
+    const host = window.parent.document.documentElement;
+    const sync = () => setTheme(host.dataset.theme === 'dark' ? 'blog-dark' : 'blog-light');
+    sync();
+    new MutationObserver(sync).observe(host, {attributes:true, attributeFilter:['data-theme']});
+  }
+} catch (_) {}
+window.downloadChart={setSize,setTheme,seconds,stats,stop,play,get playing(){return playing;}};
+// Start at a useful example; playback is controlled by the reader.
+stop();
+</script></body></html>
